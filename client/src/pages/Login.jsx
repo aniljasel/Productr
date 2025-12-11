@@ -14,6 +14,7 @@ const Login = () => {
     const [step, setStep] = useState(1); // 1: Email, 2: OTP
     const [error, setError] = useState('');
     const [toast, setToast] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const showToast = (message, type) => {
         setToast({ message, type });
@@ -22,11 +23,13 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
             if (step === 1) {
                 if (!email) {
                     setError('Please enter your email');
+                    setLoading(false);
                     return;
                 }
                 console.log('Attempting Login Init for:', email);
@@ -37,6 +40,7 @@ const Login = () => {
             } else {
                 if (!otp) {
                     setError('Please enter OTP');
+                    setLoading(false);
                     return;
                 }
                 await loginVerify(email, otp);
@@ -44,6 +48,8 @@ const Login = () => {
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong');
+        } finally {
+            setLoading(false);
         }
     };
 
