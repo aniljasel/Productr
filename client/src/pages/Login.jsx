@@ -108,20 +108,22 @@ const Login = () => {
 
                 <button
                     type="submit"
+                    disabled={loading}
                     className='btn-primary'
                     style={{
                         width: '100%',
                         padding: '14px',
-                        background: '#1E1B4B', /* Dark blue from design */
+                        background: loading ? '#9CA3AF' : '#1E1B4B',
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
                         fontSize: '16px',
                         fontWeight: '600',
-                        cursor: 'pointer'
+                        cursor: loading ? 'not-allowed' : 'pointer',
+                        opacity: loading ? 0.7 : 1
                     }}
                 >
-                    {step === 1 ? 'Login' : 'Verify OTP'}
+                    {loading ? 'Processing...' : (step === 1 ? 'Login' : 'Verify OTP')}
                 </button>
             </form>
         </AuthLayout>
