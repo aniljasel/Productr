@@ -29,7 +29,9 @@ const Login = () => {
                     setError('Please enter your email');
                     return;
                 }
+                console.log('Attempting Login Init for:', email);
                 await loginInit(email);
+                console.log('Login Init success');
                 showToast("OTP sent successfully", "success");
                 setStep(2);
             } else {
