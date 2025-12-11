@@ -1,0 +1,170 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthLayout from '../components/AuthLayout';
+import { useAuth } from '../context/AuthContext';
+import OtpInput from '../components/OtpInput';
+import Toast from '../components/Toast';
+
+const Signup = () => {
+    const navigate = useNavigate();
+    const { signupInit, signupVerify } = useAuth();
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [otp, setOtp] = useState('');
+
+    const [step, setStep] = useState(1); // 1: Details, 2: OTP
+    const [error, setError] = useState('');
+    const [toast, setToast] = useState(null);
+
+    const showToast = (message, type) => {
+        setToast({ message, type });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        try {
+            if (step === 1) {
+                if (!name || !email || !password) {
+                    setError('Please fill all fields');
+                    return;
+                }
+                await signupInit({ name, email, password });
+                showToast("OTP sent successfully", "success");
+                setStep(2);
+            } else {
+                if (!otp) {
+                    setError('Please enter OTP');
+                    return;
+                }
+                await signupVerify(email, otp);
+                navigate('/');
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Something went wrong');
+        }
+    };
+
+    return (
+        <AuthLayout
+            title={step === 1 ? "Create your Productr Account" : "Verify OTP"}
+            footerText={step === 1 ? "Already have an Account" : ""}
+            footerLinkText={step === 1 ? "Login Here" : ""}
+            footerLink="/login"
+        >
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+            <form onSubmit={handleSubmit}>
+                {error && <div style={{ color: 'red', marginBottom: '10px', fontSize: '14px' }}>{error}</div>}
+
+                {step === 1 ? (
+                    <>
+                        <div className="form-group" style={{ marginBottom: '25px' }}>
+                            <label style={{ display: 'block', fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+                                Full Name
+                            </label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="John Doe"
+                                style={{
+                                    width: '100%',
+                                    padding: '12px 16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #C0C0C0',
+                                    fontSize: '16px',
+                                    color: '#333',
+                                    outline: 'none',
+                                    background: 'white'
+                                }}
+                            />
+                        </div>
+                        <div className="form-group" style={{ marginBottom: '25px' }}>
+                            <label style={{ display: 'block', fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+                                Email Address
+                            </label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Acme@gmail.com"
+                                style={{
+                                    width: '100%',
+                                    padding: '12px 16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #C0C0C0',
+                                    fontSize: '16px',
+                                    color: '#333',
+                                    outline: 'none',
+                                    background: 'white'
+                                }}
+                            />
+                        </div>
+                        <div className="form-group" style={{ marginBottom: '25px' }}>
+                            <label style={{ display: 'block', fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                style={{
+                                    width: '100%',
+                                    padding: '12px 16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #C0C0C0',
+                                    fontSize: '16px',
+                                    color: '#333',
+                                    outline: 'none',
+                                    background: 'white'
+                                }}
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <div>
+                        <div className="form-group" style={{ marginBottom: '10px' }}>
+                            <label style={{ display: 'block', fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+                                Enter OTP sent to {email}
+                            </label>
+                            <OtpInput length={6} onComplete={(val) => setOtp(val)} />
+                        </div>
+                        <div style={{ textAlign: 'center', marginBottom: '25px', fontSize: '14px', color: '#666' }}>
+                            Didn't receive OTP? <span style={{ color: '#1E1B4B', cursor: 'pointer', fontWeight: '600' }}>Resend</span>
+                        </div>
+                    </div>
+                )}
+
+                <button
+                    type="submit"
+                    className='btn-primary'
+                    style={{
+                        width: '100%',
+                        padding: '14px',
+                        background: '#1E1B4B',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                    }}
+                >
+                    {step === 1 ? 'Sign Up' : 'Verify OTP'}
+                </button>
+            </form>
+        </AuthLayout>
+    );
+};
+
+export default Signup;
