@@ -38,7 +38,7 @@ project-root/
 3. Create a `.env` file in `server/` with the following:
    ```
    PORT=5000
-   MONGO_URI=your_mongodb_connection_string
+   MONGO_URI=mongodb+srv://schedulemanager4_db_user:JstNapmYoOMGUdyl@productr.6ij6kqn.mongodb.net/?appName=Productr
    ```
    *(Note: A default config is provided but you should use your own URI)*
 4. Seed the database (Optional):
