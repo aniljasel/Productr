@@ -127,41 +127,52 @@ const Products = () => {
 
             {loading ? (
                 <div>Loading...</div>
-            ) : products.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
                 <div className="empty-state">
-                    <div style={{ marginBottom: '20px' }}>
-                        {/* Exact Icon match: 4 squares + Plus */}
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: '22px 22px',
-                            gap: '4px',
-                            margin: '0 auto',
-                            width: '48px'
-                        }}>
-                            <div style={{ height: '22px', border: '4px solid #1E1B4B', borderRadius: '4px' }}></div>
-                            <div style={{ height: '22px', border: '4px solid #1E1B4B', borderRadius: '4px' }}></div>
-                            <div style={{ height: '22px', border: '4px solid #1E1B4B', borderRadius: '4px' }}></div>
-                            <div style={{ height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {searchTerm ? (
+                        // Search Empty State
+                        <>
+                            <h3 className="empty-title" style={{ fontSize: '20px' }}>No results for "{searchTerm}"</h3>
+                            <p className="empty-desc">Try checking your spelling or use different keywords.</p>
+                        </>
+                    ) : (
+                        // No Products Empty State
+                        <>
+                            <div style={{ marginBottom: '20px' }}>
+                                {/* Exact Icon match: 4 squares + Plus */}
                                 <div style={{
-                                    position: 'relative',
-                                    width: '100%',
-                                    height: '100%',
+                                    display: 'grid',
+                                    gridTemplateColumns: '22px 22px',
+                                    gap: '4px',
+                                    margin: '0 auto',
+                                    width: '48px'
                                 }}>
-                                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '4px', height: '16px', background: '#1E1B4B', borderRadius: '2px' }}></div>
-                                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '16px', height: '4px', background: '#1E1B4B', borderRadius: '2px' }}></div>
+                                    <div style={{ height: '22px', border: '4px solid #1E1B4B', borderRadius: '4px' }}></div>
+                                    <div style={{ height: '22px', border: '4px solid #1E1B4B', borderRadius: '4px' }}></div>
+                                    <div style={{ height: '22px', border: '4px solid #1E1B4B', borderRadius: '4px' }}></div>
+                                    <div style={{ height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div style={{
+                                            position: 'relative',
+                                            width: '100%',
+                                            height: '100%',
+                                        }}>
+                                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '4px', height: '16px', background: '#1E1B4B', borderRadius: '2px' }}></div>
+                                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '16px', height: '4px', background: '#1E1B4B', borderRadius: '2px' }}></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <h3 className="empty-title" style={{ fontSize: '20px' }}>Feels a little empty over here...</h3>
-                    <p className="empty-desc">You can create products without connecting store you can add products to store anytime</p>
-                    <button className="btn btn-primary" onClick={handleAddClick} style={{ backgroundColor: '#1E40AF', padding: '12px 40px' }}>
-                        Add your Products
-                    </button>
+                            <h3 className="empty-title" style={{ fontSize: '20px' }}>Feels a little empty over here...</h3>
+                            <p className="empty-desc">You can create products without connecting store you can add products to store anytime</p>
+                            <button className="btn btn-primary" onClick={handleAddClick} style={{ backgroundColor: '#1E40AF', padding: '12px 40px' }}>
+                                Add your Products
+                            </button>
+                        </>
+                    )}
                 </div>
             ) : (
                 <div className="product-grid">
-                    {products.map(p => (
+                    {filteredProducts.map(p => (
                         <ProductCard
                             key={p._id}
                             product={p}
