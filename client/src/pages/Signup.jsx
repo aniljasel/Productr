@@ -7,7 +7,7 @@ import Toast from '../components/Toast';
 
 const Signup = () => {
     const navigate = useNavigate();
-    const { signupInit, signupVerify } = useAuth();
+    const { signupInit, signupVerify, loading } = useAuth();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -148,19 +148,20 @@ const Signup = () => {
                 <button
                     type="submit"
                     className='btn-primary'
+                    disabled={loading}
                     style={{
                         width: '100%',
                         padding: '14px',
-                        background: '#1E1B4B',
+                        background: loading ? '#ccc' : '#1E1B4B',
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
                         fontSize: '16px',
                         fontWeight: '600',
-                        cursor: 'pointer'
+                        cursor: loading ? 'not-allowed' : 'pointer'
                     }}
                 >
-                    {step === 1 ? 'Sign Up' : 'Verify OTP'}
+                    {loading ? 'Creating...' : (step === 1 ? 'Sign Up' : 'Verify OTP')}
                 </button>
             </form>
         </AuthLayout>
