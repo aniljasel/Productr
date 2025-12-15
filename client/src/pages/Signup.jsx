@@ -7,7 +7,7 @@ import Toast from '../components/Toast';
 
 const Signup = () => {
     const navigate = useNavigate();
-    const { signupInit, signupVerify, loading } = useAuth();
+    const { signupInit, signupVerify } = useAuth();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -17,6 +17,7 @@ const Signup = () => {
     const [step, setStep] = useState(1); // 1: Details, 2: OTP
     const [error, setError] = useState('');
     const [toast, setToast] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const showToast = (message, type) => {
         setToast({ message, type });
@@ -25,11 +26,13 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsSubmitting(true);
 
         try {
             if (step === 1) {
                 if (!name || !email || !password) {
                     setError('Please fill all fields');
+                    setIsSubmitting(false);
                     return;
                 }
                 await signupInit({ name, email, password });
@@ -38,6 +41,7 @@ const Signup = () => {
             } else {
                 if (!otp) {
                     setError('Please enter OTP');
+                    setIsSubmitting(false);
                     return;
                 }
                 await signupVerify(email, otp);
@@ -45,6 +49,8 @@ const Signup = () => {
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -148,20 +154,20 @@ const Signup = () => {
                 <button
                     type="submit"
                     className='btn-primary'
-                    disabled={loading}
+                    disabled={isSubmitting}
                     style={{
                         width: '100%',
                         padding: '14px',
-                        background: loading ? '#ccc' : '#1E1B4B',
+                        background: isSubmitting ? '#ccc' : '#1E1B4B',
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
                         fontSize: '16px',
                         fontWeight: '600',
-                        cursor: loading ? 'not-allowed' : 'pointer'
+                        cursor: isSubmitting ? 'not-allowed' : 'pointer'
                     }}
                 >
-                    {loading ? 'Creating...' : (step === 1 ? 'Sign Up' : 'Verify OTP')}
+                    {isSubmitting ? 'Creating...' : (step === 1 ? 'Sign Up' : 'Verify OTP')}
                 </button>
             </form>
         </AuthLayout>
