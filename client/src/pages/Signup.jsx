@@ -24,11 +24,15 @@ const Signup = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         setError('');
         setIsSubmitting(true);
 
         try {
+            // If already at step 2 (OTP) and calling for "Resend", we treat it as re-init (Step 1 logic)
+            // But since 'step' is state, we need a separate handler or logic.
+            // Actually, for "Resend", we just want to trigger signupInit again with the same data.
+
             if (step === 1) {
                 if (!name || !email || !password) {
                     setError('Please fill all fields');
@@ -39,6 +43,7 @@ const Signup = () => {
                 showToast("OTP sent successfully", "success");
                 setStep(2);
             } else {
+                // If checking OTP verification
                 if (!otp) {
                     setError('Please enter OTP');
                     setIsSubmitting(false);
@@ -49,6 +54,19 @@ const Signup = () => {
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleResend = async () => {
+        setError('');
+        setIsSubmitting(true);
+        try {
+            await signupInit({ name, email, password });
+            showToast("OTP Resent successfully", "success");
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to resend OTP');
         } finally {
             setIsSubmitting(false);
         }
@@ -146,7 +164,16 @@ const Signup = () => {
                             <OtpInput length={6} onComplete={(val) => setOtp(val)} />
                         </div>
                         <div style={{ textAlign: 'center', marginBottom: '25px', fontSize: '14px', color: '#666' }}>
-                            Didn't receive OTP? <span style={{ color: '#1E1B4B', cursor: 'pointer', fontWeight: '600' }}>Resend</span>
+                            Didn't receive OTP? <span
+                                onClick={!isSubmitting ? handleResend : null}
+                                style={{
+                                    color: isSubmitting ? '#ccc' : '#1E1B4B',
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                {isSubmitting ? 'Sending...' : 'Resend'}
+                            </span>
                         </div>
                     </div>
                 )}
