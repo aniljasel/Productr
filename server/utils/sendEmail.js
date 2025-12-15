@@ -8,13 +8,17 @@ const sendEmail = async (options) => {
     console.log(`[Email] User: ${process.env.EMAIL_USER}`);
 
     const transporter = nodemailer.createTransport({
-        service: 'gmail', // Automatically handles host, port (465/587) and secure
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for 587
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
-        connectionTimeout: 3000, // 3 seconds: Fail fast if network is blocked
-        // tls: { rejectUnauthorized: false } // Only use if absolutely necessary, better to trust defaults first
+        tls: {
+            rejectUnauthorized: false // Helps with some strict firewalls
+        },
+        connectionTimeout: 5000, // 5 seconds timeout
         debug: true,
         logger: true
     });
