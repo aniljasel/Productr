@@ -35,38 +35,42 @@ project-root/
    ```bash
    npm install
    ```
-3. Create a `.env` file in `server/` with the following:
-   ```
-   PORT=5000
-   MONGO_URI=mongodb+srv://schedulemanager4_db_user:JstNapmYoOMGUdyl@productr.6ij6kqn.mongodb.net/?appName=Productr
-   ```
-   *(Note: A default config is provided but you should use your own URI)*
-4. Seed the database (Optional):
-   ```bash
-   node seed/seedProducts.js
-   ```
-5. Start the server:
-   ```bash
-   npm start
-   # or
-   npm run dev (if nodemon is installed)
-   ```
+### 3. Environment Variables (Server)
+Create a `.env` file in `server/`:
 
-### 2. Frontend Setup
-1. Navigate to the `client` directory:
-   ```bash
-   cd client
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-4. Open the browser at `http://localhost:5173`.
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
 
-## Environment Variables
-The backend requires a `MONGO_URI`. The frontend API URL is configured to `http://localhost:5000/api` by default in `client/src/api/api.js`.
+# Cloudinary (Image Uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Email Service (Brevo/Sendinblue)
+EMAIL_USER=your_sender_email@gmail.com
+# Use Brevo API Key for reliable production email (starts with xkeysib-)
+BREVO_API_KEY=xkeysib-your-key-here
+```
+
+*Note: Legacy SMTP variables (`SMTP_HOST`, `SMTP_PORT`, `EMAIL_PASS`) are optional if `BREVO_API_KEY` is provided.*
+
+### 4. Frontend Configuration
+The frontend connects to the backend URL.
+- **Local Development**: Default is `http://localhost:5000/api`
+- **Production**: Set `VITE_API_URL` in Vercel/Netlify.
+
+## Deployment
+
+### Backend (Railway/Render)
+- Deploy the `server` folder.
+- Add all Environment Variables from the list above.
+- **Important**: For Railway, set `BREVO_API_KEY` to ensure emails work (Ports 587/465 are often blocked).
+
+### Frontend (Vercel)
+- Deploy the `client` folder.
+- Add Environment Variable:
+  - `VITE_API_URL` = `https://your-backend-url.app/api`
+
 

@@ -55,6 +55,9 @@ const OtpInput = ({ length = 6, onComplete }) => {
                 <input
                     key={index}
                     type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="one-time-code"
                     ref={(input) => (inputRefs.current[index] = input)}
                     value={value}
                     onChange={(e) => handleChange(index, e)}
