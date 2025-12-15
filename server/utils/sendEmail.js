@@ -13,6 +13,7 @@ const sendEmail = async (options) => {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
+        connectionTimeout: 3000, // 3 seconds: Fail fast if network is blocked
         // tls: { rejectUnauthorized: false } // Only use if absolutely necessary, better to trust defaults first
         debug: true,
         logger: true

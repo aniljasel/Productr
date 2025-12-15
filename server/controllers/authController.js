@@ -61,9 +61,13 @@ const registerUserInit = async (req, res) => {
             });
             res.status(200).json({ message: 'OTP sent to email' });
         } catch (error) {
-            console.error("Email error:", error);
-            // In dev, maybe return OTP?
-            res.status(500).json({ message: 'Email could not be sent' });
+            console.error("Email send failed (Network Error):", error.message);
+            // FAILOVER: Log OTP to console so they can signup anyway
+            console.log("#####################################");
+            console.log(`### DEBUG OTP FOR ${email}: ${otp} ###`);
+            console.log("#####################################");
+
+            res.status(200).json({ message: 'Email failed. Check Server Logs for OTP.' });
         }
 
     } catch (error) {
@@ -137,8 +141,13 @@ const loginUserInit = async (req, res) => {
             });
             res.status(200).json({ message: 'OTP sent to email' });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Email could not be sent' });
+            console.error("Email send failed (Network Error):", error.message);
+            // FAILOVER: Log OTP to console
+            console.log("#####################################");
+            console.log(`### DEBUG OTP FOR ${email}: ${otp} ###`);
+            console.log("#####################################");
+
+            res.status(200).json({ message: 'Email failed. Check Server Logs for OTP.' });
         }
 
     } catch (error) {
